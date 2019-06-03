@@ -2,14 +2,18 @@ package com.mendev.sportsmanager.login
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.mendev.sportsmanager.R
+import com.mendev.sportsmanager.login.data.LoginRepositoryImpl
+import com.mendev.sportsmanager.login.data.datasource.LoginCloudDataSource
+import com.mendev.sportsmanager.login.domain.LoginUseCaseImpl
 import com.mendev.sportsmanager.shared.BaseActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity(), LoginPresenter.View {
 
     private val presenter: LoginPresenter
-        by lazy { LoginPresenter() }
+        by lazy { LoginPresenter(LoginUseCaseImpl(LoginRepositoryImpl(LoginCloudDataSource()))) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +27,7 @@ class LoginActivity : BaseActivity(), LoginPresenter.View {
         super.onDestroy()
 
         presenter.detachView()
+        presenter.clear()
     }
 
     private fun loadListeners() {
@@ -38,19 +43,8 @@ class LoginActivity : BaseActivity(), LoginPresenter.View {
     override fun dismissProgress() {
         loading.visibility = View.GONE
     }
-}
 
-/**
- * Extension function to simplify setting an afterTextChanged action to EditText components.
- */
-//fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-//    this.addTextChangedListener(object : TextWatcher {
-//        override fun afterTextChanged(editable: Editable?) {
-//            afterTextChanged.invoke(editable.toString())
-//        }
-//
-//        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-//
-//        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-//    })
-//}
+    override fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+}
