@@ -3,6 +3,7 @@ package com.mendev.sportsmanager.login
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.firebase.ui.auth.AuthUI
 import com.mendev.sportsmanager.R
 import com.mendev.sportsmanager.login.data.LoginRepositoryImpl
 import com.mendev.sportsmanager.login.data.datasource.LoginCloudDataSource
@@ -21,6 +22,20 @@ class LoginActivity : BaseActivity(), LoginPresenter.View {
 
         presenter.attachView(this)
         loadListeners()
+
+
+        // Choose authentication providers
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.FacebookBuilder().build())
+
+// Create and launch sign-in intent
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build(),
+            99)
     }
 
     override fun onDestroy() {
